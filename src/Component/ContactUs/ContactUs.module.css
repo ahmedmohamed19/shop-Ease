@@ -1,0 +1,15 @@
+.container {
+    max-width: 800px;
+}
+
+.form-control {
+    border-radius: 5px;
+}
+
+.btn {
+    border-radius: 5px;
+}
+
+a:hover {
+    color: #28a745 !important;
+}

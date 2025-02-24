@@ -1,0 +1,10 @@
+.registerContainer {
+    background-image: url('../../assets/colorful-paper-shopping-bags.avif');
+    background-size: cover;
+    background-position: center center;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

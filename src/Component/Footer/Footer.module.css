@@ -1,0 +1,23 @@
+.footer {
+    font-size: 14px;
+}
+
+.footer h5 {
+    margin-bottom: 15px;
+}
+
+.footer p {
+    margin-bottom: 8px;
+}
+
+.footer .input-group input {
+    border-radius: 5px 0 0 5px;
+}
+
+.footer .input-group button {
+    border-radius: 0 5px 5px 0;
+}
+
+.footer a:hover {
+    color: #28a745 !important;
+}

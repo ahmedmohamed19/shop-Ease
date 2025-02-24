@@ -91,7 +91,7 @@ export default function ProductDetails() {
                         <div className="col-md-6 d-flex flex-column justify-content-center">
                             <h2 className="fw-bold">{product?.title}</h2>
                             <p className="text-muted">{product?.description}</p>
-                            <h4 className="text-success">${product?.price}</h4>
+                            <h4 className="text-success">{product?.price} $</h4>
 
 
                             <div className="d-flex align-items-center">
@@ -134,7 +134,7 @@ export default function ProductDetails() {
                                             <div className="card-body text-center">
                                                 <h5 className="card-title">{currProduct.title}</h5>
                                                 <p className="text-muted mb-1">{currProduct.category.name}</p>
-                                                <p className="text-success fw-bold">${currProduct.price}</p>
+                                                <p className="text-success fw-bold">{currProduct.price} $</p>
                                                 <button className="btn btn-primary btn-sm">
                                                     View Details
                                                 </button>

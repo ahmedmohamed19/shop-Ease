@@ -1,7 +1,3 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './Component/Layout/Layout'
 import Home from './Component/Home/Home'
@@ -17,6 +13,8 @@ import BrandDetails from './Component/BrandDetails/BrandDetails'
 import ContactUs from './Component/ContactUs/ContactUs'
 import Cart from './Component/Cart/Cart'
 import Wishlist from './Component/Wishlist/Wishlist'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 let router = createBrowserRouter([
   {

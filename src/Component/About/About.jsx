@@ -1,16 +1,19 @@
 import React from "react";
 import Style from "./About.module.css";
+import CEO from '../../assets/CEO.jpg'
+import COO from '../../assets/COO.jpg'
+import CFO from '../../assets/CFO.jpg'
+import CMO from '../../assets/CMO.jpg'
+import CTO from '../../assets/CTO.jpg'
 
 export default function About() {
     return (
         <div className="container my-5">
-            {/* 🏢 Company Introduction */}
             <section className="text-center">
                 <h1 className="fw-bold">About Us</h1>
                 <p className="text-muted">Your trusted online shopping destination.</p>
             </section>
 
-            {/* 🌟 Our Mission & Vision */}
             <section className="my-5 text-center">
                 <div className="row">
                     <div className="col-md-6">
@@ -28,7 +31,6 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 🏆 Our Values */}
             <section className="my-5">
                 <h2 className="fw-bold text-center">Our Values</h2>
                 <div className="row text-center">
@@ -50,7 +52,6 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 🔥 Why Choose Us? */}
             <section className="my-5 text-center">
                 <h2 className="fw-bold">Why Choose Us?</h2>
                 <div className="row">
@@ -66,23 +67,37 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 👥 Meet Our Team (Optional) */}
             <section className="my-5 text-center">
                 <h2 className="fw-bold">Meet Our Team</h2>
                 <div className="row">
                     <div className="col-md-4">
-                        <img src="/path-to-team-member.jpg" alt="CEO" className={Style.teamImage} />
-                        <h4 className="mt-2">John Doe</h4>
+                        <img src={CEO} alt="CEO" className={Style.teamImage} />
+                        <h4 className="mt-2">Ahmed Mohamed</h4>
                         <p>Founder & CEO</p>
                     </div>
                     <div className="col-md-4">
-                        <img src="/path-to-team-member.jpg" alt="CTO" className={Style.teamImage} />
-                        <h4 className="mt-2">Jane Smith</h4>
+                        <img src={COO} alt="CTO" className={Style.teamImage} />
+                        <h4 className="mt-2">Ahmed ElSheikh</h4>
+                        <p>Chief Operating Officer</p>
+                    </div>
+                    <div className="col-md-4">
+                        <img src={CEO} alt="CIO" className={Style.teamImage} />
+                        <h4 className="mt-2">Mohamed Ommar</h4>
+                        <p>Chief Information Officer</p>
+                    </div>
+                    <div className="col-md-4">
+                        <img src={CFO} alt="CFO" className={Style.teamImage} />
+                        <h4 className="mt-2">Ibrahim Eltbakh</h4>
+                        <p>Chief Financial Officer</p>
+                    </div>
+                    <div className="col-md-4">
+                        <img src={CTO} alt="CTO" className={Style.teamImage} />
+                        <h4 className="mt-2">Ahmed Fouda</h4>
                         <p>Chief Technology Officer</p>
                     </div>
                     <div className="col-md-4">
-                        <img src="/path-to-team-member.jpg" alt="CMO" className={Style.teamImage} />
-                        <h4 className="mt-2">Emily White</h4>
+                        <img src={CMO} alt="CMO" className={Style.teamImage} />
+                        <h4 className="mt-2">Mohamed Nsr</h4>
                         <p>Marketing Director</p>
                     </div>
                 </div>

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Carousel } from 'bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
@@ -10,7 +9,6 @@ export default function ProductDetails() {
     const [allProductsLoading, setAllProductsLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [allProducts, setAllProducts] = useState([]);
-    const carouselRef = useRef(null);
 
     useEffect(() => {
         async function getProduct() {
@@ -37,12 +35,6 @@ export default function ProductDetails() {
         getAllProducts();
     }, [id]);
 
-    useEffect(() => {
-        if (product?.images?.length > 0 && carouselRef.current) {
-            new Carousel(carouselRef.current);
-        }
-    }, [product]);
-
     const handleAddToCart = () => {
         console.log(`Added ${product?.title} to cart`);
         alert('Item added to cart!');
@@ -62,10 +54,9 @@ export default function ProductDetails() {
                     </div>
                 ) : (
                     <>
-                        {/* 🖼 Product Image Carousel */}
                         <div className="col-md-6 p-3">
                             {product?.images && product.images.length > 0 ? (
-                                <div id="carouselExampleIndicators" className="carousel slide shadow-lg rounded" ref={carouselRef}>
+                                <div id="carouselExampleIndicators" className="carousel slide shadow-lg rounded" >
                                     <div className="carousel-indicators">
                                         {product.images.map((_, index) => (
                                             <button
@@ -97,13 +88,12 @@ export default function ProductDetails() {
                             )}
                         </div>
 
-                        {/* 📝 Product Details */}
                         <div className="col-md-6 d-flex flex-column justify-content-center">
                             <h2 className="fw-bold">{product?.title}</h2>
                             <p className="text-muted">{product?.description}</p>
                             <h4 className="text-success">${product?.price}</h4>
 
-                            {/* ⭐ Ratings */}
+
                             <div className="d-flex align-items-center">
                                 <span className="fw-bold me-2">{product?.ratingsAverage}</span>
                                 {[1, 2, 3, 4, 5].map(i => (
@@ -111,7 +101,6 @@ export default function ProductDetails() {
                                 ))}
                             </div>
 
-                            {/* 🛒 Add to Cart & Wishlist Buttons */}
                             <div className="mt-4">
                                 <button className="btn btn-success me-3" onClick={handleAddToCart}>
                                     <i className="fa-solid fa-cart-shopping me-2"></i> Add to Cart
@@ -125,7 +114,7 @@ export default function ProductDetails() {
                 )}
             </div>
 
-            {/* 📌 Related Products Section */}
+
             <div className="row mt-5  ">
                 <h3 className="fw-bold text-center mb-4">Related Products</h3>
                 <div className="d-flex mt-5 flex-nowrap overflow-x-auto gap-3">

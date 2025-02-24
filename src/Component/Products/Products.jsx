@@ -63,7 +63,7 @@ export default function Products() {
             ) : (
                 <div className="row">
                     {products.map((product) => (
-                        <div key={product.id} className="col-6 col-md-4 col-xl-3 p-2">
+                        <div key={product.id} className="col-md-6 col-lg-4 col-xl-3 p-2">
                             <div className={`card shadow-lg p-3 rounded ${Style.productCard}`}>
                                 <Link to={`/ProductDetails/${product.id}`} className="text-decoration-none text-dark">
                                     <div className={Style.imageContainer}>

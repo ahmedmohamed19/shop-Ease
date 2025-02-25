@@ -1,15 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { ScaleLoader } from "react-spinners";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Style from "./Home.module.css";
+import { cartContext } from "../../Context/CartContext";
+import toast from "react-hot-toast";
 
 export default function Home() {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { addToCart } = useContext(cartContext)
+    const [loadingStates, setLoadingStates] = useState({});
 
+    async function handleAddToCart(productId) {
+        setLoadingStates(prev => ({ ...prev, [productId]: true })); // ⬅️ تفعيل التحميل للمنتج المحدد
+
+        try {
+            const response = await addToCart(productId);
+            if (response.data.status) {
+                toast.success(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            toast.error("Failed to add to cart.");
+        }
+
+        setLoadingStates(prev => ({ ...prev, [productId]: false })); // ⬅️ إيقاف التحميل بعد انتهاء العملية
+    }
     useEffect(() => {
         async function fetchData() {
             try {
@@ -72,9 +93,9 @@ export default function Home() {
                                         <img src={product.imageCover} alt={product.title} className={Style.productImage} />
                                         <h5 className="mt-2">{product.title.split(" ").slice(0, 3).join(" ")}</h5>
                                         <p className="fw-bold">{product.price} $</p>
-                                        <button className="btn btn-success w-100">Add to Cart</button>
                                     </div>
                                 </Link>
+                                <button onClick={() => handleAddToCart(product.id)} className="btn btn-success w-100">Add to Cart</button>
                             </div>
                         ))}
                     </div>

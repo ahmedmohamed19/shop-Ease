@@ -1,69 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import Style from './Cart.module.css';
+import axios from 'axios';
+import { cartContext } from '../../Context/CartContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import toast from 'react-hot-toast';
 
 export default function Cart() {
-    const [cart, setCart] = useState([]);
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [updating, setUpdating] = useState(null);
+
+    const { headers } = useContext(cartContext);
 
     useEffect(() => {
-        const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCart(storedCart);
+        fetchProducts();
     }, []);
 
-    useEffect(() => {
-        if (cart.length > 0) {
-            fetchProducts();
-        } else {
-            setProducts([]);
-            setTotalPrice(0);
-        }
-    }, [cart]);
-
     async function fetchProducts() {
+        setLoading(true);
         try {
-            const responses = await Promise.all(
-                cart.map(id => fetch(`https://ecommerce.routemisr.com/api/v1/products/${id}`).then(res => res.json()))
-            );
-            const productData = responses.map(res => res.data);
-            setProducts(productData);
-            calculateTotal(productData);
+            const res = await axios.get(`https://ecommerce.routemisr.com/api/v1/cart`, { headers });
+            const fetchedProducts = res.data.data.products;
+            setProducts(fetchedProducts);
+            setTotalPrice(fetchedProducts.reduce((sum, product) => sum + product.price * product.count, 0));
         } catch (error) {
-            console.error('Error fetching cart products:', error);
+            console.error("Error fetching cart products:", error);
         }
+        setLoading(false);
     }
 
-    function calculateTotal(productData) {
-        const total = productData.reduce((acc, product) => acc + product.price, 0);
-        setTotalPrice(total);
+    async function updateQuantity(productId, newQuantity) {
+        if (newQuantity == 0) {
+            removeFromCart(productId)
+            return
+        };
+        setUpdating(productId);
+        try {
+            const response = await axios.put(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, { count: newQuantity }, { headers });
+            if (response.data.status) {
+                toast.success("Quantity updated!");
+                fetchProducts();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+        }
+        setUpdating(null);
     }
 
-    function removeFromCart(productId) {
-        const updatedCart = cart.filter(id => id !== productId);
-        setCart(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
+    async function removeFromCart(productId) {
+        try {
+            const response = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, { headers });
+            if (response.data.status) {
+                toast.success("Deleted Successfully");
+                fetchProducts();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error removing product from cart:", error);
+        }
     }
 
     return (
-        <div className="container mt-5">
-            <h2 className="mb-4">🛒 Your Cart</h2>
-            {products.length > 0 ? (
+        <div className="container mt-5 min-vh-100">
+            <h2 className="mb-4 text-center">🛒 Your Cart</h2>
+
+            {loading ? (
+                <div className="text-center">
+                    <i className="fa-solid fa-spinner fa-spin fa-3x text-success"></i>
+                    <p className="mt-3">Loading your cart...</p>
+                </div>
+            ) : products.length > 0 ? (
                 <>
                     <div className="row">
                         {products.map(product => (
-                            <div key={product.id} className="col-12 col-md-6 col-lg-4 mb-4">
-                                <div className={`card shadow-lg p-3 ${Style.cartCard}`}>
+                            <div key={product._id} className="col-12 col-md-6 col-lg-4 mb-4">
+                                <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
                                     <Link to={`/ProductDetails/${product.id}`} className="text-decoration-none text-dark">
-                                        <div className={Style.imageContainer}>
-                                            <img src={product.imageCover} alt={product.title} className={Style.productImage} />
+                                        <div className="position-relative">
+                                            <img
+                                                src={product.product.imageCover}
+                                                alt={product.product.title}
+                                                className="card-img-top img-fluid"
+                                                style={{ height: "350px", objectFit: "cover" }}
+                                            />
                                         </div>
-                                        <h5 className="mt-2">{product.title.split(' ').slice(0, 2).join(' ')}</h5>
                                     </Link>
-                                    <div className="d-flex justify-content-between align-items-center mt-2">
-                                        <span className="fw-bold">{product.price} $</span>
-                                        <button className="btn btn-danger" onClick={() => removeFromCart(product.id)}>
+                                    <div className="card-body d-flex flex-column">
+                                        <h5 className="card-title text-truncate">{product.product.title}</h5>
+                                        <p className="mb-2 text-muted">Category: {product.product.category.name}</p>
+
+                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                            <span className="fw-bold text-success fs-5">${product.price}</span>
+                                            <span className="badge bg-warning text-dark">
+                                                <i className="fa-solid fa-star"></i> {product.product.ratingsAverage}
+                                            </span>
+                                        </div>
+
+                                        <div className="d-flex align-items-center justify-content-between mb-3">
+                                            <button className="btn btn-outline-secondary btn-sm" onClick={() => updateQuantity(product.product.id, product.count - 1)}>
+                                                <i className="fa-solid fa-minus"></i>
+                                            </button>
+                                            <span className="fw-bold fs-5 mx-2">{updating === product.product.id ? <i className="fa-solid fa-spinner fa-spin"></i> : product.count}</span>
+                                            <button className="btn btn-outline-secondary btn-sm" onClick={() => updateQuantity(product.product.id, product.count + 1)}>
+                                                <i className="fa-solid fa-plus"></i>
+                                            </button>
+                                        </div>
+
+                                        <button className="btn btn-danger w-100" onClick={() => removeFromCart(product.product.id)}>
                                             <i className="fa-solid fa-trash"></i> Remove
                                         </button>
                                     </div>
@@ -71,15 +119,20 @@ export default function Cart() {
                             </div>
                         ))}
                     </div>
+
                     <div className="d-flex justify-content-between align-items-center mt-4">
-                        <h4>Total: <span className="fw-bold text-success">{totalPrice} $</span></h4>
-                        <button className="btn btn-primary">Proceed to Checkout</button>
+                        <h4>Total: <span className="fw-bold text-success">${totalPrice}</span></h4>
+                        <button className="btn btn-primary px-4 py-2">
+                            <i className="fa-solid fa-credit-card"></i> Proceed to Checkout
+                        </button>
                     </div>
                 </>
             ) : (
                 <div className="text-center text-muted">
                     <h4>Your cart is empty 😞</h4>
-                    <Link to="/products" className="btn btn-success mt-3">Go Shopping</Link>
+                    <Link to="/products" className="btn btn-success mt-3">
+                        <i className="fa-solid fa-shopping-bag"></i> Go Shopping
+                    </Link>
                 </div>
             )}
         </div>

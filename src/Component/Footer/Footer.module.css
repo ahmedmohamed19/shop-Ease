@@ -1,23 +1,19 @@
-.footer {
-    font-size: 14px;
+.footer-link {
+    transition: color 0.3s ease;
 }
 
-.footer h5 {
-    margin-bottom: 15px;
+.footer-link:hover {
+    color: #28a745 !important;
+    /* تغيير اللون عند التمرير */
+    text-decoration: underline;
 }
 
-.footer p {
-    margin-bottom: 8px;
+.social-icon {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
-.footer .input-group input {
-    border-radius: 5px 0 0 5px;
-}
-
-.footer .input-group button {
-    border-radius: 0 5px 5px 0;
-}
-
-.footer a:hover {
+.social-icon:hover {
+    transform: scale(1.2);
     color: #28a745 !important;
 }

@@ -1,7 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
+import { cartContext } from '../../Context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -9,6 +11,26 @@ export default function ProductDetails() {
     const [allProductsLoading, setAllProductsLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [allProducts, setAllProducts] = useState([]);
+    const { addToCart } = useContext(cartContext)
+    const [loadingStates, setLoadingStates] = useState({});
+
+    async function handleAddToCart(productId) {
+        setLoadingStates(prev => ({ ...prev, [productId]: true })); // ⬅️ تفعيل التحميل للمنتج المحدد
+
+        try {
+            const response = await addToCart(productId);
+            if (response.data.status) {
+                toast.success(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            toast.error("Failed to add to cart.");
+        }
+
+        setLoadingStates(prev => ({ ...prev, [productId]: false })); // ⬅️ إيقاف التحميل بعد انتهاء العملية
+    }
 
     useEffect(() => {
         async function getProduct() {
@@ -35,10 +57,7 @@ export default function ProductDetails() {
         getAllProducts();
     }, [id]);
 
-    const handleAddToCart = () => {
-        console.log(`Added ${product?.title} to cart`);
-        alert('Item added to cart!');
-    };
+
 
     const handleAddToWishlist = () => {
         console.log(`Added ${product?.title} to wishlist`);
@@ -102,7 +121,7 @@ export default function ProductDetails() {
                             </div>
 
                             <div className="mt-4">
-                                <button className="btn btn-success me-3" onClick={handleAddToCart}>
+                                <button className="btn btn-success me-3" onClick={() => handleAddToCart(product.id)}>
                                     <i className="fa-solid fa-cart-shopping me-2"></i> Add to Cart
                                 </button>
                                 <button className="btn btn-outline-danger" onClick={handleAddToWishlist}>

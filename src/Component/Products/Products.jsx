@@ -1,19 +1,20 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ScaleLoader } from 'react-spinners';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ScaleLoader, ClipLoader } from 'react-spinners';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Style from './Products.module.css';
+import { cartContext } from '../../Context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function Products() {
+    const { addToCart } = useContext(cartContext);
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([]);
     const [wishlist, setWishlist] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [loadingStates, setLoadingStates] = useState({}); // ⬅️ حالة لكل زر
 
     // جلب المنتجات مع دعم التصفح بين الصفحات
     const getProducts = async (pageNum = 1) => {
@@ -33,14 +34,23 @@ export default function Products() {
     }, [page]);
 
     // إضافة المنتج إلى السلة
-    const handleAddToCart = (product) => {
-        if (!cart.includes(product.id)) {
-            setCart([...cart, product.id]);
-            toast.success(`${product.title} added to cart! 🛒`);
-        } else {
-            toast.info(`${product.title} is already in your cart.`);
+    async function handleAddToCart(productId) {
+        setLoadingStates(prev => ({ ...prev, [productId]: true })); // ⬅️ تفعيل التحميل للمنتج المحدد
+
+        try {
+            const response = await addToCart(productId);
+            if (response.data.status) {
+                toast.success(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            toast.error("Failed to add to cart.");
         }
-    };
+
+        setLoadingStates(prev => ({ ...prev, [productId]: false })); // ⬅️ إيقاف التحميل بعد انتهاء العملية
+    }
 
     // إضافة المنتج إلى المفضلة
     const handleAddToWishlist = (product) => {
@@ -54,16 +64,14 @@ export default function Products() {
 
     return (
         <div className="container mt-5">
-            <ToastContainer position="top-right" autoClose={2000} />
-
             {loading && page === 1 ? (
                 <div className="d-flex justify-content-center align-items-center vh-100">
                     <ScaleLoader color="green" />
                 </div>
             ) : (
                 <div className="row">
-                    {products.map((product) => (
-                        <div key={product.id} className="col-md-6 col-lg-4 col-xl-3 p-2">
+                    {products.map((product, i) => (
+                        <div key={`${product.id}${Date.now().toString()}${i}`} className="col-md-6 col-lg-4 col-xl-3 p-2">
                             <div className={`card shadow-lg p-3 rounded ${Style.productCard}`}>
                                 <Link to={`/ProductDetails/${product.id}`} className="text-decoration-none text-dark">
                                     <div className={Style.imageContainer}>
@@ -92,8 +100,18 @@ export default function Products() {
                                     </div>
                                 </Link>
                                 <div className="d-flex justify-content-between mt-3">
-                                    <button className="btn btn-success flex-grow-1 me-2" onClick={() => handleAddToCart(product)}>
-                                        <i className="fa-solid fa-cart-plus"></i> Add to Cart
+                                    <button
+                                        className="btn btn-success flex-grow-1 me-2"
+                                        onClick={() => handleAddToCart(product.id)}
+                                        disabled={loadingStates[product.id]} // ⬅️ تعطيل الزر أثناء التحميل
+                                    >
+                                        {loadingStates[product.id] ? (
+                                            <ClipLoader color="white" size={20} />
+                                        ) : (
+                                            <>
+                                                <i className="fa-solid fa-cart-plus"></i> Add to Cart
+                                            </>
+                                        )}
                                     </button>
                                     <button className="btn btn-outline-danger" onClick={() => handleAddToWishlist(product)}>
                                         <i className="fa-solid fa-heart"></i>

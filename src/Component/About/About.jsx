@@ -5,6 +5,7 @@ import COO from '../../assets/COO.jpg'
 import CFO from '../../assets/CFO.jpg'
 import CMO from '../../assets/CMO.jpg'
 import CTO from '../../assets/CTO.jpg'
+import CIO from '../../assets/CIO.jpg'
 
 export default function About() {
     return (
@@ -81,7 +82,7 @@ export default function About() {
                         <p>Chief Operating Officer</p>
                     </div>
                     <div className="col-md-4">
-                        <img src={CEO} alt="CIO" className={Style.teamImage} />
+                        <img src={CIO} alt="CIO" className={Style.teamImage} />
                         <h4 className="mt-2">Mohamed Ommar</h4>
                         <p>Chief Information Officer</p>
                     </div>

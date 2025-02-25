@@ -24,7 +24,7 @@ export default function ContactUs() {
     }
 
     return (
-        <div className="container my-5">
+        <div className="container my-5 py-3">
             <div className="row">
                 {/* 🟢 Contact Form */}
                 <div className="col-md-6">

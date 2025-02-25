@@ -15,6 +15,10 @@ import Cart from './Component/Cart/Cart'
 import Wishlist from './Component/Wishlist/Wishlist'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import AuthProvider from './Context/AuthContext'
+import CartContextProvider from './Context/CartContext'
+import { Toaster } from 'react-hot-toast'
+
 
 let router = createBrowserRouter([
   {
@@ -40,7 +44,12 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <CartContextProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster></Toaster>
+        </AuthProvider>
+      </CartContextProvider>
     </>
   )
 }

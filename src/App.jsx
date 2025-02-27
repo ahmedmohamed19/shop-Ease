@@ -18,6 +18,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import AuthProvider from './Context/AuthContext'
 import CartContextProvider from './Context/CartContext'
 import { Toaster } from 'react-hot-toast'
+import NumOfCartItemsProvider from './Context/NumOfCartItemsContext'
 
 
 let router = createBrowserRouter([
@@ -45,10 +46,12 @@ function App() {
   return (
     <>
       <CartContextProvider>
-        <AuthProvider>
-          <RouterProvider router={router} />
-          <Toaster></Toaster>
-        </AuthProvider>
+        <NumOfCartItemsProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+            <Toaster></Toaster>
+          </AuthProvider>
+        </NumOfCartItemsProvider>
       </CartContextProvider>
     </>
   )

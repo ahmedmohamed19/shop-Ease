@@ -5,8 +5,10 @@ import axios from 'axios';
 import { cartContext } from '../../Context/CartContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import toast from 'react-hot-toast';
+import { NumOfCartItemsContext } from '../../Context/NumOfCartItemsContext';
 
 export default function Cart() {
+    const { setNumOfCartItems } = useContext(NumOfCartItemsContext)
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -18,10 +20,23 @@ export default function Cart() {
         fetchProducts();
     }, []);
 
+    async function clearCart() {
+        await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart`, { headers })
+            .then((response) => {
+                console.log(response);
+                toast.success('deleted')
+                fetchProducts()
+            })
+            .catch((error) => {
+                toast.error(error)
+            })
+    }
+
     async function fetchProducts() {
         setLoading(true);
         try {
             const res = await axios.get(`https://ecommerce.routemisr.com/api/v1/cart`, { headers });
+            setNumOfCartItems(res.data.numOfCartItems)
             const fetchedProducts = res.data.data.products;
             setProducts(fetchedProducts);
             setTotalPrice(fetchedProducts.reduce((sum, product) => sum + product.price * product.count, 0));
@@ -54,7 +69,9 @@ export default function Cart() {
     async function removeFromCart(productId) {
         try {
             const response = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, { headers });
+
             if (response.data.status) {
+                setNumOfCartItems(response.data.numOfCartItems)
                 toast.success("Deleted Successfully");
                 fetchProducts();
             } else {
@@ -67,7 +84,7 @@ export default function Cart() {
 
     return (
         <div className="container mt-5 min-vh-100">
-            <h2 className="mb-4 text-center">🛒 Your Cart</h2>
+            <h2 className="mb-4 text-center"> Your Cart 🛒</h2>
 
             {loading ? (
                 <div className="text-center">
@@ -118,6 +135,9 @@ export default function Cart() {
                                 </div>
                             </div>
                         ))}
+                        <button className="btn btn-danger px-4 py-2" onClick={clearCart}>
+                            Clear Cart
+                        </button>
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mt-4">
@@ -125,6 +145,7 @@ export default function Cart() {
                         <button className="btn btn-primary px-4 py-2">
                             <i className="fa-solid fa-credit-card"></i> Proceed to Checkout
                         </button>
+
                     </div>
                 </>
             ) : (

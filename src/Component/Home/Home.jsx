@@ -15,7 +15,7 @@ export default function Home() {
     const [loadingStates, setLoadingStates] = useState({});
 
     async function handleAddToCart(productId) {
-        setLoadingStates(prev => ({ ...prev, [productId]: true })); // ⬅️ تفعيل التحميل للمنتج المحدد
+        setLoadingStates(prev => ({ ...prev, [productId]: true }));
 
         try {
             const response = await addToCart(productId);
@@ -29,7 +29,7 @@ export default function Home() {
             toast.error("Failed to add to cart.");
         }
 
-        setLoadingStates(prev => ({ ...prev, [productId]: false })); // ⬅️ إيقاف التحميل بعد انتهاء العملية
+        setLoadingStates(prev => ({ ...prev, [productId]: false }));
     }
     useEffect(() => {
         async function fetchData() {
@@ -50,15 +50,13 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="container">
-            {/* 🟢 Hero Section */}
+        <div className="container mt-5">
             <section className={`${Style.hero} text-white text-center py-5`}>
                 <h1 className="fw-bold">Welcome to Our E-Commerce Store</h1>
                 <p>Find the best products at unbeatable prices!</p>
                 <Link to="/products" className="btn btn-success mt-3">Shop Now</Link>
             </section>
 
-            {/* 🔹 Featured Categories */}
             <section className="my-5">
                 <h2 className="text-center fw-bold mb-4">Featured Categories</h2>
                 {loading ? (
@@ -79,7 +77,6 @@ export default function Home() {
                 )}
             </section>
 
-            {/* 🔥 Best-Selling Products */}
             <section className="my-5">
                 <h2 className="text-center fw-bold mb-4">Best-Selling Products</h2>
                 {loading ? (
@@ -102,7 +99,6 @@ export default function Home() {
                 )}
             </section>
 
-            {/* 🗣️ Testimonials */}
             <section className="my-5 text-center">
                 <h2 className="fw-bold mb-4">What Our Customers Say</h2>
                 <div className="row">
@@ -121,7 +117,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* 📩 Newsletter Subscription */}
             <section className="text-center my-5">
                 <h2 className="fw-bold mb-3">Subscribe to Our Newsletter</h2>
                 <p>Get the latest deals and updates directly in your inbox.</p>

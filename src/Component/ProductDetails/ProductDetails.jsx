@@ -4,9 +4,11 @@ import { Link, useParams } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
 import { cartContext } from '../../Context/CartContext';
 import toast from 'react-hot-toast';
+import { NumOfCartItemsContext } from '../../Context/NumOfCartItemsContext';
 
 export default function ProductDetails() {
     const { id } = useParams();
+    const { setNumOfCartItems } = useContext(NumOfCartItemsContext)
     const [productLoading, setProductLoading] = useState(true);
     const [allProductsLoading, setAllProductsLoading] = useState(true);
     const [product, setProduct] = useState(null);
@@ -15,11 +17,20 @@ export default function ProductDetails() {
     const [loadingStates, setLoadingStates] = useState({});
 
     async function handleAddToCart(productId) {
-        setLoadingStates(prev => ({ ...prev, [productId]: true })); // ⬅️ تفعيل التحميل للمنتج المحدد
+        setLoadingStates(prev => ({ ...prev, [productId]: true }));
 
         try {
             const response = await addToCart(productId);
-            if (response.data.status) {
+            if (response == 'Product Already In Your Cart')
+                toast("Product Already In Your Cart 🛒", {
+                    icon: "ℹ️",
+                    style: {
+                        background: "#fff",
+                        color: "#3498db",
+                    },
+                });
+            else if (response.data.status) {
+                setNumOfCartItems(response.data.numOfCartItems)
                 toast.success(response.data.message);
             } else {
                 toast.error(response.data.message);
@@ -29,7 +40,7 @@ export default function ProductDetails() {
             toast.error("Failed to add to cart.");
         }
 
-        setLoadingStates(prev => ({ ...prev, [productId]: false })); // ⬅️ إيقاف التحميل بعد انتهاء العملية
+        setLoadingStates(prev => ({ ...prev, [productId]: false }));
     }
 
     useEffect(() => {
@@ -59,10 +70,20 @@ export default function ProductDetails() {
 
 
 
-    const handleAddToWishlist = () => {
-        console.log(`Added ${product?.title} to wishlist`);
-        alert('Item added to wishlist!');
-    };
+
+
+    function handleAddToWishlist(productId) {
+        axios.post(`https://ecommerce.routemisr.com/api/v1/wishlist`, {
+            productId
+        }, {
+            headers
+        }).then((responce) => {
+            toast.success(responce.data.message)
+            return responce
+        }).catch((error) => {
+            toast.error(error)
+        })
+    }
 
     return (
         <div className="container mt-5">

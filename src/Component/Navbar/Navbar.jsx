@@ -3,10 +3,12 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { authContextObj } from "../../Context/AuthContext";
 import SocialIcons from "../SocialIcons/SocialIcons";
+import { NumOfCartItemsContext } from "../../Context/NumOfCartItemsContext";
 
 export default function Navbar() {
     const navigate = useNavigate();
     const { token, setToken } = useContext(authContextObj);
+    const { numOfCartItems } = useContext(NumOfCartItemsContext);
 
     function logOut() {
         localStorage.removeItem("token");
@@ -15,9 +17,8 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top ">
             <div className="container">
-                {/* Logo */}
                 {token ? (
                     <Link className="navbar-brand fw-bold fs-4 text-success" to="/">
                         ShopEase
@@ -26,7 +27,6 @@ export default function Navbar() {
                     <h1 className="navbar-brand text-success fs-2 fw-bold">ShopEase</h1>
                 )}
 
-                {/* Navbar Toggler for Mobile */}
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -40,7 +40,6 @@ export default function Navbar() {
                 </button>
 
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    {/* Main Navigation Links */}
                     {token && (
                         <ul className="navbar-nav m-auto">
                             <li className="nav-item">
@@ -76,30 +75,30 @@ export default function Navbar() {
                         </ul>
                     )}
 
-                    {/* Right Section (Cart, Wishlist, Social Icons, Auth Buttons) */}
                     <ul className="navbar-nav d-flex align-items-center gap-3">
                         {token && (
                             <>
                                 {/* Cart Icon */}
                                 <li className="nav-item">
-                                    <Link className="nav-link text-dark" to="/cart">
-                                        <i className="fa-solid fa-cart-shopping fs-5"></i>
+                                    <Link className="nav-link position-relative " to="/cart">
+                                        <i className={`fa-solid fa-cart-shopping fs-5 pt-2 ${numOfCartItems > 0 ? "text-success" : "text-dark"}`}></i>
+                                        {numOfCartItems > 0 && (
+                                            <span className="position-absolute top-0">
+                                                {numOfCartItems}
+                                            </span>
+                                        )}
                                     </Link>
                                 </li>
-
-                                {/* Wishlist Icon with text beside it */}
                                 <li className="nav-item">
                                     <NavLink className="nav-link d-flex align-items-center text-dark" to="/wishlist">
                                         <i className="fa-solid fa-heart text-danger fs-5 me-1"></i> Wishlist
                                     </NavLink>
                                 </li>
 
-                                {/* Social Media Icons */}
                                 <SocialIcons />
                             </>
                         )}
 
-                        {/* Auth Buttons */}
                         {!token ? (
                             <>
                                 <li className="nav-item">

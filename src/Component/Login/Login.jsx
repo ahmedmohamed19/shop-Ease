@@ -17,7 +17,7 @@ export default function Login() {
             email: '',
             password: ''
         },
-        validate: validate,
+        // validate: validate,
         onSubmit: handleSubmit,
     });
 
@@ -43,20 +43,20 @@ export default function Login() {
             });
     }
 
-    function validate(values) {
-        const error = {};
-        if (!values.email) {
-            error.email = 'Email is Required';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-            error.email = 'Invalid Email';
-        }
-        if (!values.password) {
-            error.password = 'Password is Required';
-        } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(values.password)) {
-            error.password = 'Password must be at least 8 characters, contain one uppercase letter, one number, and one special character';
-        }
-        return error;
-    }
+    // function validate(values) {
+    //     const error = {};
+    //     if (!values.email) {
+    //         error.email = 'Email is Required';
+    //     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+    //         error.email = 'Invalid Email';
+    //     }
+    //     if (!values.password) {
+    //         error.password = 'Password is Required';
+    //     } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(values.password)) {
+    //         error.password = 'Password must be at least 8 characters, contain one uppercase letter, one number, and one special character';
+    //     }
+    //     return error;
+    // }
 
     return (
         <div className={Style.loginContainer}>
